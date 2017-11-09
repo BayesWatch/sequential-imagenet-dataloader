@@ -185,14 +185,15 @@ class Loader(object):
                 x = torch.ByteTensor(x).cuda()
                 y = torch.IntTensor(y).cuda()
                 # but once they're on the gpu, we'll need them in 
-                yield uint8_to_float(x), y
+                yield uint8_to_float(x), y.long()
             else:
-                yield uint8_to_float(torch.ByteTensor(x)), torch.IntTensor(y)
+                yield uint8_to_float(torch.ByteTensor(x)), torch.IntTensor(y).long()
 
     def __len__(self):
         return self.ds.size()
 
 def uint8_to_float(x):
+    x = x.permute(0,3,1,2) # pytorch is (n,c,w,h)
     return x.float()/128. - 1.
 
 if __name__ == '__main__':

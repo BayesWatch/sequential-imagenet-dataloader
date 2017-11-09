@@ -29,6 +29,23 @@ script `preprocess_sequential.py` to create the huge LMDB binary files.
 They will get put in wherever your `IMAGENET` environment variable is, and
 they will take up 140G for train, plus more for val.
 
+Usage
+-----
+
+Wherever the `DataLoader` is defined in your Pytorch code, replaced that
+with `imagenet_seq.data.Loader`; although you can't call it with exactly
+the same arguments. For an example, this would be the substitution in the
+[PyTorch ImageNet example][imagenet]:
+
+```
+    #train_loader = torch.utils.data.DataLoader(
+    #    train_dataset, batch_size=args.batch_size, shuffle=(train_sampler is None),
+    #    num_workers=args.workers, pin_memory=True, sampler=train_sampler)
+    train_loader = ImagenetLoader('train', batch_size=args.batch_size, num_workers=args.workers)
+```
+
+You may need to tune the number of workers to use to get best results.
+
 Experiments
 -----------
 

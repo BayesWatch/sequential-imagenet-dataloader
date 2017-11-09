@@ -132,27 +132,7 @@ def default_collate(batch):
     raise TypeError((error_msg.format(type(batch[0]))))
 
 
-class DataLoaderIter(object):
-    "Iterates once over the DataLoader's dataset, as specified by tensorpack; so does very little"
-    def __init__(self, loader):
-        self.ds = loader.ds
-        self.num_workers = loader.num_workers
-
-    def __len__(self):
-        return self.ds.size()
-
-    def __next__(self):
-        
-        # cast to correct pytorch type
-        return numpy_type_map[elem.dtype.name](list(map(py_type, batch)))
-        return 
-
-    next = __next__  # Python 2 compatibility
-
-    def __iter__(self):
-        return self
-
-class DataLoader(object):
+class Loader(object):
     """
     Data loader. Combines a dataset and a sampler, and provides
     single- or multi-process iterators over the dataset.
@@ -217,6 +197,6 @@ def uint8_to_float(x):
 
 if __name__ == '__main__':
     from tqdm import tqdm
-    dl = DataLoader('train', cuda=True)
+    dl = Loader('train', cuda=True)
     for x in tqdm(dl, total=len(dl)):
         pass

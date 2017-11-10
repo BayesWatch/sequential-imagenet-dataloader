@@ -21,6 +21,7 @@ Requirements:
 [tensorpack]: https://github.com/ppwwyyxx/tensorpack
 [lmdb]: https://lmdb.readthedocs.io/en/release/
 [tqdm]: https://pypi.python.org/pypi/tqdm
+[opencv]: https://pypi.python.org/pypi/opencv-python
 
 To start, you must set the environment variable `IMAGENET` to point to
 wherever you have saved the ILSVRC2012 dataset. You must also set the

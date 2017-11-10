@@ -1,3 +1,8 @@
+
+**In development**: still running an experiment to verify that the
+preprocessing and augmentations are sufficient to train a standard CNN on
+imagenet.
+
 A plug-in ImageNet DataLoader for PyTorch. Uses tensorpack's [sequential
 loading][seq] to load fast even if you're using a HDD. 
 

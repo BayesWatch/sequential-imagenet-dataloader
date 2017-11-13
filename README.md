@@ -1,8 +1,4 @@
 
-**In development**: still running an experiment to verify that the
-preprocessing and augmentations are sufficient to train a standard CNN on
-imagenet.
-
 A plug-in ImageNet DataLoader for PyTorch. Uses tensorpack's [sequential
 loading][seq] to load fast even if you're using a HDD. 
 
@@ -58,9 +54,12 @@ Running the [PyTorch ImageNet Example][imagenet] on the server I work on
 that has no SSD, but a set of 4 Titan X GPUs, I get an average
 minibatch speed of 5.3s. Using this iterator to feed examples, I'm able to
 get about 0.59s per minibatch, so 54 minutes per epoch; 90 epochs should
-take about 73 hours, and that's enough to get results.
+take about 73 hours, and that's enough to get results. A resnet-18
+converged to 69% top-1 and 89% top-5, which [appears to be the
+standard][resnet_original].
 
 The Titan Xs still look a little hungry if we're running on all four, but
 it's fast enough to work with.
 
 [imagenet]: https://github.com/pytorch/examples/tree/master/imagenet
+[resnet_original]: https://github.com/HolmesShuan/ResNet-18-Caffemodel-on-ImageNet

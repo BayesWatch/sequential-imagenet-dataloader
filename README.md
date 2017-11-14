@@ -19,6 +19,14 @@ Requirements:
 [tqdm]: https://pypi.python.org/pypi/tqdm
 [opencv]: https://pypi.python.org/pypi/opencv-python
 
+If you use pip's editable install, you can fix bugs I have probably introduced:
+
+```
+git clone https://github.com/BayesWatch/sequential-imagenet-dataloader.git
+cd sequential-imagenet-dataloader
+pip install -e .
+```
+
 To start, you must set the environment variable `IMAGENET` to point to
 wherever you have saved the ILSVRC2012 dataset. You must also set the
 `TENSORPACK_DATASET` environment variable, because tensorpack may download

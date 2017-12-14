@@ -13,11 +13,13 @@ Requirements:
 * [LMDB][]: `pip install lmdb`
 * [TQDM][]: `pip install tqdm`
 * [OpenCV][]: `conda install opencv`
+* [Protobuf][]: `conda install protobuf`
 
 [tensorpack]: https://github.com/ppwwyyxx/tensorpack
 [lmdb]: https://lmdb.readthedocs.io/en/release/
 [tqdm]: https://pypi.python.org/pypi/tqdm
 [opencv]: https://pypi.python.org/pypi/opencv-python
+[Protobuf]: https://github.com/google/protobuf
 
 If you use pip's editable install, you can fix bugs I have probably introduced:
 

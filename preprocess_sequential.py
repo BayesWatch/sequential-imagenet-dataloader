@@ -3,11 +3,12 @@
 import os
 import numpy as np
 from tensorpack.dataflow import *
-
+os.environ['TENSORPACK_DATASET'] = '/home/shgao/tensorpack_data/'
+os.environ['IMAGENET'] = '/media/db/datasets/ILSVRC/Data/CLS-LOC/'
 if __name__ == '__main__':
     class BinaryILSVRC12(dataset.ILSVRC12Files):
         def get_data(self):
-            for fname, label in super(BinaryILSVRC12, self).get_data():
+            for fname, label in super(BinaryILSVRC12, self).__iter__():
                 with open(fname, 'rb') as f:
                     jpeg = f.read()
                 jpeg = np.asarray(bytearray(jpeg), dtype='uint8')

@@ -10,6 +10,7 @@ Install
 Requirements:
 
 * [Tensorpack][]: clone and `pip install -e .`
+ `pip install --upgrade git+https://github.com/tensorpack/tensorpack.git`
 * [LMDB][]: `pip install lmdb`
 * [TQDM][]: `pip install tqdm`
 * [OpenCV][]: `conda install opencv`

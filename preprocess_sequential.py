@@ -18,4 +18,4 @@ if __name__ == '__main__':
     for name in ['train', 'val']:
         ds0 = BinaryILSVRC12(imagenet_path, name)
         ds1 = PrefetchDataZMQ(ds0, nr_proc=1)
-        dftools.dump_dataflow_to_lmdb(ds1, os.path.join(imagenet_path,'ILSVRC-%s.lmdb'%name))
+        LMDBSerializer.save(ds1, os.path.join(imagenet_path,'ILSVRC-%s.lmdb'%name))

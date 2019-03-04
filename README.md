@@ -10,10 +10,19 @@ Install
 Requirements:
 
 * [Tensorpack][]: clone and `pip install -e .`
- `pip install --upgrade git+https://github.com/tensorpack/tensorpack.git`
+
+   ```
+   sudo apt-get install build-essential libcap-dev
+   pip install python-prctl
+   pip install --upgrade git+https://github.com/tensorpack/tensorpack.git
+   ```
+
 * [LMDB][]: `pip install lmdb`
+
 * [TQDM][]: `pip install tqdm`
+
 * [OpenCV][]: `conda install opencv`
+
 * [Protobuf][]: `conda install protobuf`
 
 [tensorpack]: https://github.com/ppwwyyxx/tensorpack
@@ -24,11 +33,11 @@ Requirements:
 
 If you use pip's editable install, you can fix bugs I have probably introduced:
 
-```
+   ```
 git clone https://github.com/BayesWatch/sequential-imagenet-dataloader.git
 cd sequential-imagenet-dataloader
 pip install -e .
-```
+   ```
 
 To start, you must set the environment variable `IMAGENET` to point to
 wherever you have saved the ILSVRC2012 dataset. You must also set the
@@ -75,3 +84,7 @@ it's fast enough to work with.
 
 [imagenet]: https://github.com/pytorch/examples/tree/master/imagenet
 [resnet_original]: https://github.com/HolmesShuan/ResNet-18-Caffemodel-on-ImageNet
+
+```
+
+```

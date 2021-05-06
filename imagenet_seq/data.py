@@ -23,7 +23,14 @@ class GoogleNetResize(imgaug.ImageAugmentor):
                  target_shape=224):
         self._init(locals())
 
-    def _augment(self, img, _):
+    def get_transform(self, img):
+        def legacy_augment_coords(self, coords, p):
+            return coords 
+        return imgaug.TransformFactory(name="LegacyConversion --"+str(self),
+                    apply_image=lambda img: self._augment(img),
+                    apply_coords=lambda coords: legacy_augment_coords(self, coords, p))
+
+    def _augment(self, img):
         h, w = img.shape[:2]
         area = h * w
         for _ in range(10):

@@ -9,8 +9,6 @@ import torch
 import numpy as np
 import tensorpack.dataflow as td
 from tensorpack import imgaug
-from tensorpack.dataflow import (AugmentImageComponent, PrefetchDataZMQ,
-                                BatchData, MultiThreadMapData)
 
 #####################################################################################################
 # copied from: https://github.com/ppwwyyxx/tensorpack/blob/master/examples/ResNet/imagenet_utils.py #
@@ -74,7 +72,7 @@ def fbresnet_augmentor(isTrain):
             imgaug.ResizeShortestEdge(256, cv2.INTER_CUBIC),
             imgaug.CenterCrop((224, 224)),
         ]
-    return augmentors
+    return imgaug.AugmentorList(augmentors)
 #####################################################################################################
 #####################################################################################################
 
@@ -132,7 +130,7 @@ def default_collate(batch):
     raise TypeError((error_msg.format(type(batch[0]))))
 
 
-class Loader(object):
+class ImagenetLoader(object):
     """
     Data loader. Combines a dataset and a sampler, and provides
     single- or multi-process iterators over the dataset.
@@ -156,26 +154,31 @@ class Loader(object):
             GPU, which is faster).
     """
 
-    def __init__(self, mode, batch_size=256, shuffle=False, num_workers=25, cache=50000,
+    def __init__(self, imagenet_dir, mode, batch_size=256, shuffle=False, num_workers=25, cache=50000,
             collate_fn=default_collate,  drop_last=False, cuda=False):
+        if drop_last:
+            raise NotImplementedError("drop_last not implemented")
         # enumerate standard imagenet augmentors
         imagenet_augmentors = fbresnet_augmentor(mode == 'train')
 
         # load the lmdb if we can find it
-        lmdb_loc = os.path.join(os.environ['IMAGENET'],'ILSVRC-%s.lmdb'%mode)
+        lmdb_loc = os.path.join(imagenet_dir, 'ILSVRC-%s.lmdb'%mode)
         ds = td.LMDBSerializer.load(lmdb_loc, shuffle=False)
         ds = td.LocallyShuffleData(ds, cache)
-        ds = td.PrefetchData(ds, 5000, 1)
-        ds = td.MapDataComponent(ds, lambda x: cv2.imdecode(x, cv2.IMREAD_COLOR), 0)
-        ds = td.AugmentImageComponent(ds, imagenet_augmentors)
-        ds = td.PrefetchDataZMQ(ds, num_workers)
+        # ds = td.PrefetchData(ds, 5000, 1)
+        # ds = td.MapDataComponent(ds, lambda x: cv2.imdecode(x, cv2.IMREAD_COLOR), 0)
+        # ds = td.AugmentImageComponent(ds, imagenet_augmentors)
+        # https://github.com/tensorpack/tensorpack/issues/1405
+        def f(x):
+            jpeg_str, label = x
+            return imagenet_augmentors.augment(cv2.imdecode(jpeg_str, cv2.IMREAD_COLOR)), label
+        ds = td.MultiProcessMapDataZMQ(ds, num_proc=num_workers, map_func=f)
         self.ds = td.BatchData(ds, batch_size)
         self.ds.reset_state()
 
         self.batch_size = batch_size
         self.num_workers = num_workers
         self.cuda = cuda
-        #self.drop_last = drop_last
 
     def __iter__(self):
         for x, y in self.ds.get_data():
@@ -183,7 +186,7 @@ class Loader(object):
                 # images come out as uint8, which are faster to copy onto the gpu
                 x = torch.ByteTensor(x).cuda()
                 y = torch.IntTensor(y).cuda()
-                # but once they're on the gpu, we'll need them in 
+                # but once they're on the gpu, we'll need them in float
                 yield uint8_to_float(x), y.long()
             else:
                 yield uint8_to_float(torch.ByteTensor(x)), torch.IntTensor(y).long()
@@ -197,6 +200,6 @@ def uint8_to_float(x):
 
 if __name__ == '__main__':
     from tqdm import tqdm
-    dl = Loader('train', cuda=True)
+    dl = ImagenetLoader(os.environ['DBLOC'], 'train', cuda=True)
     for x in tqdm(dl, total=len(dl)):
         pass

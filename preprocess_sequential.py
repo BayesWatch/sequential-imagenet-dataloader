@@ -2,7 +2,7 @@
 
 import os
 import numpy as np
-from tensorpack.dataflow import dataset, PrefetchDataZMQ, LMDBSerializer
+from tensorpack.dataflow import dataset, MultiProcessRunnerZMQ, LMDBSerializer
 import argparse
 
 if __name__ == '__main__':
@@ -23,9 +23,13 @@ if __name__ == '__main__':
     else:
         lmdb_path = args.database_dir 
     os.environ['TENSORPACK_DATASET'] = os.path.join(lmdb_path, "tensorpack_data")
+    if not os.path.exists(os.environ['TENSORPACK_DATASET']):
+        os.mkdir(os.environ['TENSORPACK_DATASET'])
 
     for name in ['train', 'val']:
-        print(f"Processing {args.imagenet} {name}...")
+        db_filename = 'ILSVRC-%s.lmdb'%name
+        db_loc = os.path.join(lmdb_path, db_filename)
+        print(f"Processing {args.imagenet} {name} to {db_loc}...")
         ds0 = BinaryILSVRC12(args.imagenet, name)
-        ds1 = PrefetchDataZMQ(ds0, nr_proc=1)
-        LMDBSerializer.save(ds1, os.path.join(lmdb_path, 'ILSVRC-%s.lmdb'%name))
+        ds1 = MultiProcessRunnerZMQ(ds0, num_proc=1)
+        LMDBSerializer.save(ds1, db_loc)

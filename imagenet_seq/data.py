@@ -41,7 +41,8 @@ class ImagenetLoader(object):
         # open the lmdb file
         lmdb_loc = os.path.join(imagenet_dir, 'ILSVRC-%s.lmdb'%mode)
         ds = td.LMDBData(lmdb_loc, shuffle=False)
-        ds = td.LocallyShuffleData(ds, cache)
+        if shuffle:
+            ds = td.LocallyShuffleData(ds, cache)
         def f(x):
             img, label= td.LMDBSerializer._deserialize_lmdb(x)
             # img, label = x
@@ -57,15 +58,25 @@ class ImagenetLoader(object):
         self.batch_size = batch_size
         self.num_workers = num_workers
 
-    def __iter__(self):
         self.ds.reset_state()
-        # for x, y in self.ds.get_data():
-        for x, y in self.ds:
-            x, y = torch.stack(x), torch.tensor(y)
-            yield x, y
+        self.ds_iter = iter(self.ds)
+        self.N = self.ds.size()
+        self.i = 0
+
+    def __iter__(self):
+        self.i = 0
+        return self
+
+    def __next__(self):
+        if (self.i + 1) == self.N:
+            raise StopIteration
+        x, y = next(self.ds_iter)
+        self.i += 1
+        x, y = torch.stack(x), torch.tensor(y)
+        return x, y
 
     def __len__(self):
-        return self.ds.size()
+        return self.N
 
 if __name__ == '__main__':
     from tqdm import tqdm
@@ -79,8 +90,8 @@ if __name__ == '__main__':
         transforms.ToTensor(),
         normalize,
     ])
-    dl = ImagenetLoader(os.environ['DBLOC'], 'train', transform, 256, num_workers=4)
+    dl = ImagenetLoader(os.environ['DBLOC'], 'train', transform, 256, num_workers=4, shuffle=True)
     # td.TestDataSpeed(dl.ds).start()
-    # for x, y in tqdm(dl, total=len(dl)):
-    #     x, y = x.cuda(), y.cuda()
+    for x, y in tqdm(dl, total=len(dl)):
+        x, y = x.cuda(), y.cuda()
 

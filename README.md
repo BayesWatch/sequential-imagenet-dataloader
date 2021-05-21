@@ -28,6 +28,7 @@ your opencv is fast enough check using the script
 
 * [Protobuf][]: `conda install protobuf`
 
+[dataflow]: https://github.com/tensorpack/dataflow
 [tensorpack]: https://github.com/ppwwyyxx/tensorpack
 [lmdb]: https://lmdb.readthedocs.io/en/release/
 [tqdm]: https://pypi.python.org/pypi/tqdm

@@ -93,6 +93,7 @@ train_loader = ImagenetLoader(args.data, 'train', imagenet_transforms,
 For a complete example, see the [example ImageNet training
 script provided][example].
 
+[imagenet]: https://github.com/pytorch/examples/blob/master/imagenet/main.py
 [example]: ./examples/imagenet/main.py
 
 Experiments

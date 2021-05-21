@@ -14,7 +14,7 @@ Requirements:
    ```
    sudo apt-get install build-essential libcap-dev
    pip install python-prctl
-   pip install --upgrade git+https://github.com/tensorpack/dataflow.git
+   pip install --upgrade git+https://github.com/tensorpack/dataflow.git@4ac75d6b0
    ```
 
 * [LMDB][]: `pip install lmdb`

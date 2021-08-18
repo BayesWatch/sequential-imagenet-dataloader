@@ -9,7 +9,7 @@ Install
 
 Requirements:
 
-* [DataFlow][]: clone and `pip install -e .`
+* [DataFlow][]:
 
    ```
    sudo apt-get install build-essential libcap-dev
